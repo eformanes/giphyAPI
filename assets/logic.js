@@ -23,12 +23,19 @@ function displayResults(){
 			console.log(imageDisplay);
 
 
-			var animalDiv = $("<div>");
+			var animalDiv = $('<div class="col-md-4">');
 
 			var animalRating = $("<p>").text("Rating: " + rating);
 
 			var animalImage = $("<img>");
+			animalImage.addClass("clickableImage");
 			animalImage.attr("src", imageDisplay);
+			animalImage.attr("data-still", response.data[j].images.fixed_height_still.url);
+			animalImage.attr("data-animate", imageDisplay);
+			animalImage.attr("data-state", "animate");
+
+
+			//animalImage.attr("width", 200);
 
 
 
@@ -47,11 +54,18 @@ function renderButtons(){
 	$("#animalButtonRow").empty();
 
 	for(var i=0;i<animalNamesArray.length;i++){
-		var newAnimalButton = $("<button>");
-		newAnimalButton.addClass('btn btn-primary btn-group ' + i+ ' animal');
+		var newButtonGroupDiv = $('<div class="btn-group">');
+		newButtonGroupDiv.attr("role", "group");
+
+		var newAnimalButton = $('<button>');
+		//newAnimalButton.addClass('btn btn-primary btn-group ' + i+ ' animal');
+		newAnimalButton.addClass('btn btn-primary ' + i+ ' animal');
+		newAnimalButton.attr("type", "button");
+
 		newAnimalButton.attr("data-animalName", animalNamesArray[i]);
 		newAnimalButton.text(animalNamesArray[i]);
-		$("#animalButtonRow").append(newAnimalButton);
+		newButtonGroupDiv.append(newAnimalButton);
+		$("#animalButtonRow").append(newButtonGroupDiv);
 
 	}
 
@@ -64,8 +78,21 @@ function addNewAnimal(){
 	animalNamesArray.push(newAnimalName);
 
 	renderButtons();
+	$("#newAnimal").val('');
 
 }
+
+function animateOrStill(){
+	if($(this).attr("data-state") === "animate"){
+		$(this).attr("src", $(this).attr("data-still"));
+		$(this).attr("data-state", "still");
+	}
+	else{
+		$(this).attr("src", $(this).attr("data-animate"));
+		$(this).attr("data-state", "animate");
+	}
+}
+
 
 
 $("#newAnimalBtn").on("click", addNewAnimal);
@@ -74,7 +101,7 @@ $("#newAnimalBtn").on("click", addNewAnimal);
 
 
 $(document).on("click", ".animal", displayResults);
-
+$(document).on("click", ".clickableImage", animateOrStill);
 
 
 
